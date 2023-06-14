@@ -31,7 +31,7 @@ module.exports = {
     'import/first': 'error',
     'import/newline-after-import': 'error',
     'import/no-default-export': 'error',
-    'import/no-extraneous-dependencies': ['error', { devDependencies: false }],
+    'import/no-extraneous-dependencies': ['error'],
     'import/no-mutable-exports': 'error',
     'import/order': [
       'error',
@@ -136,6 +136,15 @@ module.exports = {
     yoda: ['error', 'never'],
   },
   overrides: [
+    {
+      files: ['src/**/*'],
+      rules: {
+        'import/no-extraneous-dependencies': [
+          'error',
+          { devDependencies: false },
+        ],
+      },
+    },
     {
       files: ['**/*.ts'],
       parser: '@typescript-eslint/parser',
