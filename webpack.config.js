@@ -7,8 +7,18 @@ module.exports = {
     rules: [
       {
         test: /\.tsx?$/u,
-        use: 'ts-loader',
         exclude: /node_modules/u,
+        use: [
+          {
+            loader: 'babel-loader',
+            options: {
+              presets: [['@babel/preset-env']],
+            },
+          },
+          {
+            loader: 'ts-loader',
+          },
+        ],
       },
     ],
   },
