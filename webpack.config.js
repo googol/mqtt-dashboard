@@ -25,4 +25,8 @@ module.exports = {
       scriptLoading: 'module',
     }),
   ],
+  devServer: {
+    static: './dist',
+    hot: true,
+  },
 }
