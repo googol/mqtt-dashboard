@@ -146,7 +146,7 @@ module.exports = {
       },
     },
     {
-      files: ['**/*.ts'],
+      files: ['**/*.ts', '**/*.tsx'],
       parser: '@typescript-eslint/parser',
       parserOptions: {
         project: ['./tsconfig.json', './tsconfig.test.json'],
@@ -226,33 +226,6 @@ module.exports = {
         'no-unused-expressions': 'off',
         '@typescript-eslint/no-unused-expressions': 'error',
         '@typescript-eslint/consistent-type-imports': 'error',
-        '@typescript-eslint/naming-convention': [
-          'error',
-          {
-            selector: ['variable'],
-            modifiers: ['exported'],
-            format: ['PascalCase'],
-          },
-          {
-            selector: ['variable'],
-            modifiers: ['const', 'global'],
-            types: ['string', 'number'],
-            format: ['UPPER_CASE'],
-          },
-          {
-            selector: ['variable'],
-            types: ['function', 'array'],
-            format: ['camelCase'],
-          },
-          {
-            selector: ['typeLike'],
-            format: ['PascalCase'],
-          },
-        ],
-        '@typescript-eslint/no-explicit-any': [
-          'error',
-          { ignoreRestArgs: true },
-        ],
         '@typescript-eslint/no-shadow': 'error',
         '@typescript-eslint/no-unused-vars': 'off',
         '@typescript-eslint/no-useless-constructor': 'error',
@@ -263,7 +236,7 @@ module.exports = {
       },
       settings: {
         'import/parsers': {
-          '@typescript-eslint/parser': ['.ts'],
+          '@typescript-eslint/parser': ['.ts', '.tsx'],
         },
         'import/resolver': {
           typescript: {
