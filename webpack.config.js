@@ -2,7 +2,7 @@ const path = require('node:path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 module.exports = {
-  entry: './src/main.ts',
+  entry: './src/main.tsx',
   module: {
     rules: [
       {
@@ -33,6 +33,7 @@ module.exports = {
     new HtmlWebpackPlugin({
       title: 'Dashboard',
       scriptLoading: 'module',
+      template: 'src/index.html',
     }),
   ],
   devServer: {
