@@ -10,6 +10,6 @@ const renovate = (_changedFiles) =>
 module.exports = {
   '*.{ts,tsx,mts,cts}': [typecheck, eslint, prettier],
   '*.{js,jsx,mjs,cjs}': [eslint, prettier],
-  '*.{json,json5,yaml,yml,md}': [prettier],
+  '*.{json,json5,yaml,yml,md,html,css}': [prettier],
   [renovateConfigFile]: [renovate],
 }
