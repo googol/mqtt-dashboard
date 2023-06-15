@@ -8,7 +8,7 @@
     "build": "webpack --mode production",
     "check": "run-p --aggregate-output --continue-on-error check:*",
     "check:types": "tsc --project tsconfig.json",
-    "check:eslint": "eslint --ignore-path .gitignore --cache --cache-strategy content --max-warning=0 .",
+    "check:eslint": "eslint --ignore-path .gitignore --cache --cache-strategy content --max-warnings=0 .",
     "check:prettier": "prettier --check --ignore-path .gitignore .",
     "fix": "run-s --continue-on-error --print-name fix:*",
     "fix:eslint": "npm run check:eslint -- --fix",
