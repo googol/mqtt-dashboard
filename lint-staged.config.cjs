@@ -8,8 +8,8 @@ const renovate = (_changedFiles) =>
   `docker run --rm -v ".:/usr/src/app" renovate/renovate:slim renovate-config-validator ${renovateConfigFile}`
 
 module.exports = {
-  '*.{ts,mts,cts}': [typecheck, eslint, prettier],
-  '*.{js,mjs,cjs}': [eslint, prettier],
+  '*.{ts,tsx,mts,cts}': [typecheck, eslint, prettier],
+  '*.{js,jsx,mjs,cjs}': [eslint, prettier],
   '*.{json,json5,yaml,yml,md}': [prettier],
   [renovateConfigFile]: [renovate],
 }
