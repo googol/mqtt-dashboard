@@ -1,5 +1,5 @@
-import type {FC} from 'react'
 import { createRoot } from 'react-dom/client'
+import type { FC } from 'react'
 
 const App: FC = () => {
   return <h1>Hello</h1>
