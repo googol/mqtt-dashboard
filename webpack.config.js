@@ -4,7 +4,27 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const NodePolyfillPlugin = require('node-polyfill-webpack-plugin')
 const ReactRefresh = require('react-refresh/babel')
 
-module.exports = {
+const isDev = (argv) => argv.mode === 'development'
+
+function* getBabelPlugins(argv) {
+  if (isDev(argv)) {
+    yield ReactRefresh
+  }
+}
+
+function* getWebpackPlugins(argv) {
+  yield new HtmlWebpackPlugin({
+    title: 'Dashboard',
+    scriptLoading: 'module',
+    template: 'src/index.html',
+  })
+  yield new NodePolyfillPlugin()
+  if (isDev(argv)) {
+    yield new ReactRefreshWebpackPlugin()
+  }
+}
+
+module.exports = (env, argv) => ({
   entry: './src/main.tsx',
   module: {
     rules: [
@@ -16,7 +36,7 @@ module.exports = {
             loader: 'babel-loader',
             options: {
               presets: ['@babel/preset-env'],
-              plugins: [ReactRefresh],
+              plugins: Array.from(getBabelPlugins(argv)),
             },
           },
           {
@@ -33,17 +53,9 @@ module.exports = {
     filename: 'bundle.js',
     path: path.resolve(__dirname, 'dist'),
   },
-  plugins: [
-    new HtmlWebpackPlugin({
-      title: 'Dashboard',
-      scriptLoading: 'module',
-      template: 'src/index.html',
-    }),
-    new NodePolyfillPlugin(),
-    new ReactRefreshWebpackPlugin(),
-  ],
+  plugins: Array.from(getWebpackPlugins(argv)),
   devServer: {
     static: './dist',
     hot: true,
   },
-}
+})
