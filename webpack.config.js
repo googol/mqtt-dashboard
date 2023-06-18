@@ -1,5 +1,8 @@
 const path = require('node:path')
+const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const NodePolyfillPlugin = require('node-polyfill-webpack-plugin')
+const ReactRefresh = require('react-refresh/babel')
 
 module.exports = {
   entry: './src/main.tsx',
@@ -12,7 +15,8 @@ module.exports = {
           {
             loader: 'babel-loader',
             options: {
-              presets: [['@babel/preset-env']],
+              presets: ['@babel/preset-env'],
+              plugins: [ReactRefresh],
             },
           },
           {
@@ -35,6 +39,8 @@ module.exports = {
       scriptLoading: 'module',
       template: 'src/index.html',
     }),
+    new NodePolyfillPlugin(),
+    new ReactRefreshWebpackPlugin(),
   ],
   devServer: {
     static: './dist',
