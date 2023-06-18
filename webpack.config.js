@@ -6,6 +6,8 @@ const ReactRefresh = require('react-refresh/babel')
 
 const isDev = (argv) => argv.mode === 'development'
 
+const publicPath = process.env.PUBLIC_PATH
+
 function* getBabelPlugins(argv) {
   if (isDev(argv)) {
     yield ReactRefresh
@@ -52,6 +54,7 @@ module.exports = (env, argv) => ({
   output: {
     filename: 'bundle.js',
     path: path.resolve(__dirname, 'dist'),
+    publicPath: publicPath === undefined ? '/' : publicPath,
   },
   plugins: Array.from(getWebpackPlugins(argv)),
   devServer: {
