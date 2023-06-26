@@ -1,8 +1,10 @@
 import { connect } from 'mqtt'
 import { useCallback, useEffect, useState } from 'react'
 import { createRoot } from 'react-dom/client'
+import { LoginForm } from './LoginForm'
+import { TemperatureReading } from './TemperatureReading'
 import type { MqttClient } from 'mqtt'
-import type { FC, PropsWithChildren, ReactNode } from 'react'
+import type { FC } from 'react'
 
 const App: FC = () => {
   const [mqttClient, setMqttClient] = useState<MqttClient | undefined>(
@@ -74,94 +76,6 @@ const App: FC = () => {
       </>
     )
   }
-}
-
-const LoginForm: FC<{
-  login: (username: string, password: string) => void
-}> = ({ login }) => {
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
-
-  return (
-    <form>
-      <input
-        type="text"
-        autoComplete="username"
-        onChange={(e) => setUsername(e.target.value)}
-      />
-      <input
-        type="password"
-        autoComplete="current-password"
-        onChange={(e) => setPassword(e.target.value)}
-      />
-      <button
-        onClick={(e) => {
-          e.preventDefault()
-          login(username, password)
-        }}
-      >
-        Log in
-      </button>
-    </form>
-  )
-}
-
-const TemperatureReading: FC<{
-  title: string
-  topic: string
-  mqttClient: MqttClient
-}> = ({ title, topic, mqttClient }) => {
-  return (
-    <MqttValueBox
-      title={title}
-      topic={topic}
-      mqttClient={mqttClient}
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- foo bar
-      extractValue={(message) => Number(message as any).toString()}
-    ></MqttValueBox>
-  )
-}
-
-function MqttValueBox<ValueType extends ReactNode>(props: {
-  title: string
-  topic: string
-  mqttClient: MqttClient
-  extractValue: (message: unknown) => ValueType
-}): ReactNode {
-  const [value, setValue] = useState<ValueType | undefined>(undefined)
-  useEffect(() => {
-    console.error('subscribing', props.topic)
-    const listener = (messageTopic: string, message: Buffer) => {
-      console.log('listener', messageTopic, message)
-      if (messageTopic === props.topic) {
-        setValue(props.extractValue(message))
-      }
-    }
-    props.mqttClient.subscribe(props.topic)
-    props.mqttClient.on('message', listener)
-
-    console.log('subscribed')
-
-    return () => {
-      props.mqttClient.unsubscribe(props.topic)
-      props.mqttClient.removeListener('message', listener)
-    }
-  }, [props.topic, props.mqttClient])
-
-  return <ReadingBox title={props.title}>{value}</ReadingBox>
-}
-
-const ReadingBox: FC<
-  PropsWithChildren<{
-    title: string
-  }>
-> = ({ title, children }) => {
-  return (
-    <div>
-      <h2>{title}</h2>
-      <p>{children}</p>
-    </div>
-  )
 }
 
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- foo bar
