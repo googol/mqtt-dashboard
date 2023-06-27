@@ -6,6 +6,19 @@ import { TemperatureReading } from './TemperatureReading'
 import type { MqttClient } from 'mqtt'
 import type { FC } from 'react'
 
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker
+      .register('/service-worker.js')
+      .then((registration) => {
+        console.log('Service worker registered: ', registration)
+      })
+      .catch((registrationError) => {
+        console.log('Service worker registration failed: ', registrationError)
+      })
+  })
+}
+
 const App: FC = () => {
   const [mqttClient, setMqttClient] = useState<MqttClient | undefined>(
     undefined,

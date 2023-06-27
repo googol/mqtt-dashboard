@@ -3,6 +3,7 @@ const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin'
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const NodePolyfillPlugin = require('node-polyfill-webpack-plugin')
 const ReactRefresh = require('react-refresh/babel')
+const WorkboxPlugin = require('workbox-webpack-plugin')
 
 const isDev = (argv) => argv.mode === 'development'
 
@@ -21,6 +22,11 @@ function* getWebpackPlugins(argv) {
     template: 'src/index.html',
   })
   yield new NodePolyfillPlugin()
+  if (!isDev(argv)) {
+    yield new WorkboxPlugin.GenerateSW({
+      maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
+    })
+  }
   if (isDev(argv)) {
     yield new ReactRefreshWebpackPlugin()
   }
