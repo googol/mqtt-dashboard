@@ -1,0 +1,18 @@
+{
+  "short_name": "Kotidashboard",
+  "name": "Kotidashboard",
+  "icons": [
+    {
+      "src": "/home_automation_512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    },
+    {
+      "src": "/home_automation_192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    }
+  ],
+  "start_url": "/",
+  "display": "standalone"
+}

@@ -1,5 +1,6 @@
 const path = require('node:path')
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin')
+const CopyPlugin = require('copy-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const NodePolyfillPlugin = require('node-polyfill-webpack-plugin')
 const ReactRefresh = require('react-refresh/babel')
@@ -22,6 +23,14 @@ function* getWebpackPlugins(argv) {
     template: 'src/index.html',
   })
   yield new NodePolyfillPlugin()
+  yield new CopyPlugin({
+    patterns: [
+      {
+        from: 'public/',
+        to: '.',
+      },
+    ],
+  })
   if (!isDev(argv)) {
     yield new WorkboxPlugin.GenerateSW({
       maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
