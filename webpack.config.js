@@ -26,7 +26,11 @@ function* getWebpackPlugins(argv) {
   yield new CopyPlugin({
     patterns: [
       {
-        from: 'public/',
+        from: 'public/manifest.webmanifest',
+        to: '.',
+      },
+      {
+        from: 'public/*.png',
         to: '.',
       },
     ],
