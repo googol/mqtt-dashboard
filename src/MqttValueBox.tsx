@@ -10,17 +10,13 @@ export function MqttValueBox<ValueType extends ReactNode>(props: {
 }): ReactNode {
   const [value, setValue] = useState<ValueType | undefined>(undefined)
   useEffect(() => {
-    console.error('subscribing', props.topic)
     const listener = (messageTopic: string, message: Buffer) => {
-      console.log('listener', messageTopic, message)
       if (messageTopic === props.topic) {
         setValue(props.extractValue(message))
       }
     }
     props.mqttClient.subscribe(props.topic)
     props.mqttClient.on('message', listener)
-
-    console.log('subscribed')
 
     return () => {
       props.mqttClient.unsubscribe(props.topic)
