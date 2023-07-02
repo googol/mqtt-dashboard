@@ -12,6 +12,7 @@ if ('serviceWorker' in navigator) {
       .register('./service-worker.js', { scope: './' })
       .then((registration) => {
         console.log('Service worker registered: ', registration)
+        console.log(registration.installing)
       })
       .catch((registrationError) => {
         console.log('Service worker registration failed: ', registrationError)
