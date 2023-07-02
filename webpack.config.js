@@ -72,9 +72,15 @@ module.exports = (env, argv) => ({
   },
   output: {
     filename: 'bundle.[contenthash].js',
-    chunkFilename: '[name].[contenthash].js',
+    chunkFilename: '[id].[contenthash].js',
     path: path.resolve(__dirname, 'dist'),
     publicPath: publicPath === undefined ? '/' : publicPath,
+  },
+  optimization: {
+    runtimeChunk: true,
+    splitChunks: {
+      chunks: 'all',
+    },
   },
   plugins: Array.from(getWebpackPlugins(argv)),
   devServer: {
