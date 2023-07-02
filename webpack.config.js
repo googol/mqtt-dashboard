@@ -31,7 +31,7 @@ function* getWebpackPlugins(argv) {
       },
       {
         from: 'public/*.png',
-        to: '.',
+        to: './[path]/[name].[contenthash][ext]',
       },
     ],
   })
@@ -71,7 +71,8 @@ module.exports = (env, argv) => ({
     extensions: ['.tsx', '.ts', '.js'],
   },
   output: {
-    filename: 'bundle.js',
+    filename: 'bundle.[contenthash].js',
+    chunkFilename: '[name].[contenthash].js',
     path: path.resolve(__dirname, 'dist'),
     publicPath: publicPath === undefined ? '/' : publicPath,
   },
