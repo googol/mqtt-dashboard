@@ -2,6 +2,7 @@ const path = require('node:path')
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin')
 const CopyPlugin = require('copy-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const NodePolyfillPlugin = require('node-polyfill-webpack-plugin')
 const ReactRefresh = require('react-refresh/babel')
 const WorkboxPlugin = require('workbox-webpack-plugin')
@@ -17,6 +18,11 @@ function* getBabelPlugins(argv) {
 }
 
 function* getWebpackPlugins(argv) {
+  if (!isDev(argv)) {
+    yield new MiniCssExtractPlugin({
+      filename: 'public/[name].[contenthash].css',
+    })
+  }
   yield new HtmlWebpackPlugin({
     title: 'Dashboard',
     scriptLoading: 'module',
@@ -45,6 +51,38 @@ function* getWebpackPlugins(argv) {
   }
 }
 
+function* getTypescriptLoaders(argv) {
+  yield {
+    loader: 'babel-loader',
+    options: {
+      presets: ['@babel/preset-env'],
+      plugins: Array.from(getBabelPlugins(argv)),
+    },
+  }
+  yield {
+    loader: 'ts-loader',
+  }
+}
+
+function* getCssLoaders(argv) {
+  if (isDev(argv)) {
+    yield {
+      loader: 'style-loader',
+    }
+  } else {
+    yield MiniCssExtractPlugin.loader
+  }
+  yield {
+    loader: 'css-loader',
+    options: {
+      importLoaders: 1,
+    },
+  }
+  yield {
+    loader: 'postcss-loader',
+  }
+}
+
 module.exports = (env, argv) => ({
   entry: './src/main.tsx',
   module: {
@@ -52,18 +90,11 @@ module.exports = (env, argv) => ({
       {
         test: /\.tsx?$/u,
         exclude: /node_modules/u,
-        use: [
-          {
-            loader: 'babel-loader',
-            options: {
-              presets: ['@babel/preset-env'],
-              plugins: Array.from(getBabelPlugins(argv)),
-            },
-          },
-          {
-            loader: 'ts-loader',
-          },
-        ],
+        use: Array.from(getTypescriptLoaders(argv)),
+      },
+      {
+        test: /\.css$/u,
+        use: Array.from(getCssLoaders(argv)),
       },
     ],
   },

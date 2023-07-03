@@ -1,3 +1,4 @@
+import './MqttValueBox.css'
 import { useEffect, useState } from 'react'
 import type { MqttClient } from 'mqtt'
 import type { FC, PropsWithChildren, ReactNode } from 'react'
@@ -33,7 +34,7 @@ const ReadingBox: FC<
   }>
 > = ({ title, children }) => {
   return (
-    <div>
+    <div className="mqtt-value-box">
       <h2>{title}</h2>
       <p>{children}</p>
     </div>
