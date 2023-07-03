@@ -3,12 +3,12 @@
   "name": "Kotidashboard",
   "icons": [
     {
-      "src": "/home_automation_512.png",
+      "src": "/public/home_automation_512.a07a63c4f2e79e49a14f.png",
       "type": "image/png",
       "sizes": "512x512"
     },
     {
-      "src": "/home_automation_192.png",
+      "src": "/public/home_automation_192.a32292f40b5c149bbfd0.png",
       "type": "image/png",
       "sizes": "192x192"
     }
