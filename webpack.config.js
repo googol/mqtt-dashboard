@@ -9,11 +9,85 @@ const WorkboxPlugin = require('workbox-webpack-plugin')
 
 const isDev = (argv) => argv.mode === 'development'
 
-const publicPath = process.env.PUBLIC_PATH
+const publicPath =
+  process.env.PUBLIC_PATH === undefined ? '/' : process.env.PUBLIC_PATH
+
+module.exports = (env, argv) => ({
+  entry: {
+    main: {
+      import: './src/main.tsx',
+    },
+  },
+  module: {
+    rules: [
+      {
+        test: /\.tsx?$/u,
+        exclude: /node_modules/u,
+        use: Array.from(getTypescriptLoaders(argv)),
+      },
+      {
+        test: /\.css$/u,
+        use: Array.from(getCssLoaders(argv)),
+      },
+    ],
+  },
+  resolve: {
+    extensions: ['.tsx', '.ts', '.js'],
+  },
+  output: {
+    filename: 'public/[name].[contenthash].js',
+    chunkFilename: '[id].[contenthash].js',
+    path: path.resolve(__dirname, 'dist'),
+    publicPath,
+  },
+  optimization: {
+    runtimeChunk: true,
+    splitChunks: {
+      chunks: 'all',
+    },
+  },
+  plugins: Array.from(getWebpackPlugins(argv)),
+  devServer: {
+    static: './dist',
+    hot: true,
+  },
+})
+
+function* getTypescriptLoaders(argv) {
+  yield {
+    loader: 'babel-loader',
+    options: {
+      presets: ['@babel/preset-env'],
+      plugins: Array.from(getBabelPlugins(argv)),
+    },
+  }
+  yield {
+    loader: 'ts-loader',
+  }
+}
 
 function* getBabelPlugins(argv) {
   if (isDev(argv)) {
     yield ReactRefresh
+  }
+}
+
+function* getCssLoaders(argv) {
+  if (isDev(argv)) {
+    yield {
+      loader: 'style-loader',
+    }
+  } else {
+    yield MiniCssExtractPlugin.loader
+  }
+  yield {
+    loader: 'css-loader',
+    options: {
+      importLoaders: 1,
+    },
+  }
+  yield {
+    loader: 'postcss-loader',
   }
 }
 
@@ -26,6 +100,7 @@ function* getWebpackPlugins(argv) {
   yield new HtmlWebpackPlugin({
     title: 'Dashboard',
     scriptLoading: 'module',
+    filename: 'index.html',
     template: 'src/index.html',
   })
   yield new NodePolyfillPlugin()
@@ -50,72 +125,3 @@ function* getWebpackPlugins(argv) {
     yield new ReactRefreshWebpackPlugin()
   }
 }
-
-function* getTypescriptLoaders(argv) {
-  yield {
-    loader: 'babel-loader',
-    options: {
-      presets: ['@babel/preset-env'],
-      plugins: Array.from(getBabelPlugins(argv)),
-    },
-  }
-  yield {
-    loader: 'ts-loader',
-  }
-}
-
-function* getCssLoaders(argv) {
-  if (isDev(argv)) {
-    yield {
-      loader: 'style-loader',
-    }
-  } else {
-    yield MiniCssExtractPlugin.loader
-  }
-  yield {
-    loader: 'css-loader',
-    options: {
-      importLoaders: 1,
-    },
-  }
-  yield {
-    loader: 'postcss-loader',
-  }
-}
-
-module.exports = (env, argv) => ({
-  entry: './src/main.tsx',
-  module: {
-    rules: [
-      {
-        test: /\.tsx?$/u,
-        exclude: /node_modules/u,
-        use: Array.from(getTypescriptLoaders(argv)),
-      },
-      {
-        test: /\.css$/u,
-        use: Array.from(getCssLoaders(argv)),
-      },
-    ],
-  },
-  resolve: {
-    extensions: ['.tsx', '.ts', '.js'],
-  },
-  output: {
-    filename: 'bundle.[contenthash].js',
-    chunkFilename: '[id].[contenthash].js',
-    path: path.resolve(__dirname, 'dist'),
-    publicPath: publicPath === undefined ? '/' : publicPath,
-  },
-  optimization: {
-    runtimeChunk: true,
-    splitChunks: {
-      chunks: 'all',
-    },
-  },
-  plugins: Array.from(getWebpackPlugins(argv)),
-  devServer: {
-    static: './dist',
-    hot: true,
-  },
-})
