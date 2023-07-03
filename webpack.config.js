@@ -112,7 +112,7 @@ function* getWebpackPlugins(argv) {
       },
       {
         from: 'public/*.png',
-        to: './[path]/[name].[contenthash][ext]',
+        to: '[path][name].[contenthash][ext]',
       },
     ],
   })
