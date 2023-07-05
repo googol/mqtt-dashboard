@@ -1,6 +1,6 @@
 const path = require('node:path')
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin')
-const CopyPlugin = require('copy-webpack-plugin')
+const FaviconsWebpackPlugin = require('favicons-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const NodePolyfillPlugin = require('node-polyfill-webpack-plugin')
@@ -104,17 +104,21 @@ function* getWebpackPlugins(argv) {
     template: 'src/index.html',
   })
   yield new NodePolyfillPlugin()
-  yield new CopyPlugin({
-    patterns: [
-      {
-        from: 'public/manifest.webmanifest',
-        to: '.',
-      },
-      {
-        from: 'public/*.png',
-        to: '[path][name].[contenthash][ext]',
-      },
-    ],
+  yield new FaviconsWebpackPlugin({
+    logo: './assets/home_automation_512.png',
+    prefix: 'public/',
+    inject: true,
+    favicons: {
+      appShortName: 'Kotidashboard',
+      appName: 'Kotidashboard',
+      appDescription: null,
+      developerURL: null,
+      start_url: '/',
+      display: 'standalone',
+      background: '#ffffff',
+      theme_color: '#000000',
+      scope: '/',
+    },
   })
   if (!isDev(argv)) {
     yield new WorkboxPlugin.GenerateSW({
