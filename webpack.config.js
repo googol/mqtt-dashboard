@@ -110,7 +110,7 @@ function* getWebpackPlugins(argv) {
   const logoFile = './assets/home_automation_512.png'
   yield new FaviconsWebpackPlugin({
     logo: logoFile,
-    prefix: 'assets/',
+    prefix: 'assets',
     inject: true,
     favicons: {
       appShortName: 'Kotidashboard',
