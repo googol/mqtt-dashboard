@@ -1,3 +1,5 @@
+const crypto = require('node:crypto')
+const fs = require('node:fs')
 const path = require('node:path')
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin')
 const FaviconsWebpackPlugin = require('favicons-webpack-plugin')
@@ -35,7 +37,7 @@ module.exports = (env, argv) => ({
     extensions: ['.tsx', '.ts', '.js'],
   },
   output: {
-    filename: 'public/[name].[contenthash].js',
+    filename: 'assets/[name].[contenthash].js',
     chunkFilename: '[id].[contenthash].js',
     path: path.resolve(__dirname, 'dist'),
     publicPath,
@@ -94,7 +96,7 @@ function* getCssLoaders(argv) {
 function* getWebpackPlugins(argv) {
   if (!isDev(argv)) {
     yield new MiniCssExtractPlugin({
-      filename: 'public/[name].[contenthash].css',
+      filename: 'assets/[name].[contenthash].css',
     })
   }
   yield new HtmlWebpackPlugin({
@@ -104,9 +106,11 @@ function* getWebpackPlugins(argv) {
     template: 'src/index.html',
   })
   yield new NodePolyfillPlugin()
+
+  const logoFile = './assets/home_automation_512.png'
   yield new FaviconsWebpackPlugin({
-    logo: './assets/home_automation_512.png',
-    prefix: 'public/',
+    logo: logoFile,
+    prefix: 'assets/',
     inject: true,
     favicons: {
       appShortName: 'Kotidashboard',
@@ -118,6 +122,7 @@ function* getWebpackPlugins(argv) {
       background: '#ffffff',
       theme_color: '#000000',
       scope: '/',
+      cacheBustingQueryParam: `v=${getCacheBustingValue(logoFile)}`,
     },
   })
   if (!isDev(argv)) {
@@ -128,4 +133,11 @@ function* getWebpackPlugins(argv) {
   if (isDev(argv)) {
     yield new ReactRefreshWebpackPlugin()
   }
+}
+
+function getCacheBustingValue(filePath) {
+  const fileBuffer = fs.readFileSync(filePath)
+  const hash = crypto.createHash('sha256')
+  hash.update(fileBuffer)
+  return hash.digest().toString('base64url')
 }
