@@ -56,10 +56,6 @@ export const ServiceWorker: FC = () => {
       </div>
     )
   } else {
-    return (
-      <div>
-        <h2>No service worker available</h2>
-      </div>
-    )
+    return null
   }
 }
