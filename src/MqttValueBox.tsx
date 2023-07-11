@@ -1,29 +1,23 @@
 import './MqttValueBox.css'
 import { useEffect, useState } from 'react'
-import type { MqttClient } from 'mqtt'
+import { useMqttContext } from './MqttContext'
 import type { FC, PropsWithChildren, ReactNode } from 'react'
 
 export function MqttValueBox<ValueType extends ReactNode>(props: {
   title: string
   topic: string
-  mqttClient: MqttClient
   extractValue: (message: unknown) => ValueType
 }): ReactNode {
   const [value, setValue] = useState<ValueType | undefined>(undefined)
+  const { listenToTopic } = useMqttContext()
   useEffect(() => {
     const listener = (messageTopic: string, message: Buffer) => {
       if (messageTopic === props.topic) {
         setValue(props.extractValue(message))
       }
     }
-    props.mqttClient.subscribe(props.topic)
-    props.mqttClient.on('message', listener)
-
-    return () => {
-      props.mqttClient.unsubscribe(props.topic)
-      props.mqttClient.removeListener('message', listener)
-    }
-  }, [props.topic, props.mqttClient])
+    return listenToTopic(props.topic, listener)
+  }, [props.topic])
 
   return <ReadingBox title={props.title}>{value}</ReadingBox>
 }

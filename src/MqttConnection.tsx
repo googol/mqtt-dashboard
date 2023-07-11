@@ -1,11 +1,11 @@
 import { connect } from 'mqtt'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { LoginForm } from './LoginForm'
-import { TemperatureReading } from './TemperatureReading'
+import { MqttContext, defaultMqttContext } from './MqttContext'
 import type { MqttClient } from 'mqtt'
-import type { FC } from 'react'
+import type { FC, PropsWithChildren } from 'react'
 
-export const Dashboard: FC = () => {
+export const MqttConnection: FC<PropsWithChildren> = ({ children }) => {
   const [mqttClient, setMqttClient] = useState<MqttClient | undefined>(
     undefined,
   )
@@ -24,14 +24,27 @@ export const Dashboard: FC = () => {
 
     setMqttClient(client)
   }, [])
-  const logout = useCallback(() => {
+  const mqttContextValue = useMemo((): MqttContext => {
     if (mqttClient === undefined) {
-      return
+      return defaultMqttContext
     }
 
-    localStorage.removeItem('mqtt_credentials')
-    setMqttClient(undefined)
-    mqttClient.end()
+    return {
+      listenToTopic: (topic, handler) => {
+        mqttClient.subscribe(topic)
+        mqttClient.on('message', handler)
+
+        return () => {
+          mqttClient.unsubscribe(topic)
+          mqttClient.removeListener('message', handler)
+        }
+      },
+      logout: () => {
+        localStorage.removeItem('mqtt_credentials')
+        setMqttClient(undefined)
+        mqttClient.end()
+      },
+    }
   }, [mqttClient])
 
   useEffect(() => {
@@ -58,17 +71,9 @@ export const Dashboard: FC = () => {
     return <LoginForm login={login} />
   } else {
     return (
-      <>
-        <TemperatureReading
-          title={'olohuone'}
-          topic="airgradient/olohuone/sensor/temperature/state"
-        />
-        <TemperatureReading
-          title={'makuuhuone'}
-          topic="airgradient/makuuhuone/sensor/temperature/state"
-        />
-        <button onClick={logout}>Logout</button>
-      </>
+      <MqttContext.Provider value={mqttContextValue}>
+        {children}
+      </MqttContext.Provider>
     )
   }
 }
