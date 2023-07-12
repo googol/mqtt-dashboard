@@ -10,6 +10,8 @@ const ReactRefresh = require('react-refresh/babel')
 const WorkboxPlugin = require('workbox-webpack-plugin')
 
 const isDev = (argv) => argv.mode === 'development'
+const distDirectory = (argv) =>
+  path.resolve(__dirname, isDev(argv) ? 'dist-dev' : 'dist')
 
 const publicPath =
   process.env.PUBLIC_PATH === undefined ? '/' : process.env.PUBLIC_PATH
@@ -39,7 +41,7 @@ module.exports = (env, argv) => ({
   output: {
     filename: 'assets/[name].[contenthash].js',
     chunkFilename: '[id].[contenthash].js',
-    path: path.resolve(__dirname, 'dist'),
+    path: distDirectory(argv),
     publicPath,
   },
   optimization: {
@@ -50,7 +52,7 @@ module.exports = (env, argv) => ({
   },
   plugins: Array.from(getWebpackPlugins(argv)),
   devServer: {
-    static: './dist',
+    static: distDirectory(argv),
     hot: true,
     watchFiles: {
       paths: ['src/**/*', 'public/**/*'],

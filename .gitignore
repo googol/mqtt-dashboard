@@ -1,4 +1,5 @@
 ## CUSTOM GITIGNORE RULES
+dist-dev/
 
 ## GITIGNORE RULES FROM https://github.com/github/gitignore/blob/main/Node.gitignore
 # Logs
