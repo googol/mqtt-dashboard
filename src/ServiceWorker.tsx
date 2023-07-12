@@ -7,7 +7,9 @@ export const ServiceWorker: FC = () => {
   const [updateAvailable, setUpdateAvailable] = useState(false)
 
   useEffect(() => {
-    if (!('serviceWorker' in navigator)) {
+    const { NODE_ENV } = process.env
+
+    if (!('serviceWorker' in navigator) || NODE_ENV !== 'production') {
       return
     }
 
