@@ -3,7 +3,7 @@ import { createContext, useContext } from 'react'
 export type MqttContext = {
   listenToTopic: (
     topic: string,
-    handler: (messageTopic: string, message: Buffer) => void,
+    handler: (messageTopic: string, message: unknown) => void,
   ) => () => void
   logout: () => void
 }

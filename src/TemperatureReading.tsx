@@ -1,5 +1,9 @@
+import { z } from 'zod'
 import { MqttValueBox } from './MqttValueBox'
+import { StringFromBuffer } from './StringFrmoBuffer'
 import type { FC } from 'react'
+
+const TemperatureValue = StringFromBuffer.pipe(z.coerce.number())
 
 export const TemperatureReading: FC<{
   title: string
@@ -9,8 +13,7 @@ export const TemperatureReading: FC<{
     <MqttValueBox
       title={title}
       topic={topic}
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- foo bar
-      extractValue={(message) => Number(message as any).toString()}
+      schema={TemperatureValue}
     ></MqttValueBox>
   )
 }

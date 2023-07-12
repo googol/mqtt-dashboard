@@ -1,24 +1,37 @@
 import { connect } from 'mqtt'
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { z } from 'zod'
 import { LoginForm } from './LoginForm'
 import { MqttContext, defaultMqttContext } from './MqttContext'
 import type { MqttClient } from 'mqtt'
 import type { FC, PropsWithChildren } from 'react'
+
+const MqttCredentials = z.object({
+  username: z.string().nonempty(),
+  password: z.string().nonempty(),
+})
+type MqttCredentials = z.infer<typeof MqttCredentials>
 
 export const MqttConnection: FC<PropsWithChildren> = ({ children }) => {
   const [mqttClient, setMqttClient] = useState<MqttClient | undefined>(
     undefined,
   )
   const login = useCallback((username: string, password: string) => {
+    console.log('login here')
     const client = connect('wss://tools.hanninen.me/ws', {
       username,
       password,
     })
 
+    client.on('error', (error) => {
+      console.error('Mqtt connection error', { error })
+    })
+
     client.once('connect', () => {
+      const credentialsToStore: MqttCredentials = { username, password }
       localStorage.setItem(
         'mqtt_credentials',
-        JSON.stringify({ username, password }),
+        JSON.stringify(credentialsToStore),
       )
     })
 
@@ -49,22 +62,18 @@ export const MqttConnection: FC<PropsWithChildren> = ({ children }) => {
 
   useEffect(() => {
     try {
-      const value = JSON.parse(localStorage.getItem('mqtt_credentials') ?? '{}')
-      if (
-        typeof value === 'object' &&
-        value !== null &&
-        'username' in value &&
-        'password' in value &&
-        typeof value.username === 'string' &&
-        typeof value.password === 'string'
-      ) {
-        login(value.username, value.password)
+      console.log('looking for login creds')
+      const localStorageValue = localStorage.getItem('mqtt_credentials')
+      if (localStorageValue === null) {
+        console.log('no credentials found')
+        return
       }
+      const json = JSON.parse(localStorageValue)
+      const value = MqttCredentials.parse(json)
+      login(value.username, value.password)
     } catch (e) {
       console.warn('invalid data in localstorage for credentials', e)
     }
-
-    localStorage.removeItem('mqtt_credentials')
   }, [login])
 
   if (mqttClient === undefined) {
