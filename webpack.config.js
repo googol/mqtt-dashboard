@@ -52,6 +52,9 @@ module.exports = (env, argv) => ({
   devServer: {
     static: './dist',
     hot: true,
+    watchFiles: {
+      paths: ['src/**/*', 'public/**/*'],
+    },
   },
 })
 
