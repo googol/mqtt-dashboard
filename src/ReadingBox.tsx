@@ -1,4 +1,4 @@
-import './ReadingBox.css'
+import { DashboardBox } from './DashboardBox'
 import type { FC, PropsWithChildren } from 'react'
 
 export const ReadingBox: FC<
@@ -8,9 +8,9 @@ export const ReadingBox: FC<
   }>
 > = ({ title, children, className }) => {
   return (
-    <div className={['reading-box', className].join(' ')}>
+    <DashboardBox className={className}>
       <h2>{title}</h2>
       <p>{children}</p>
-    </div>
+    </DashboardBox>
   )
 }
