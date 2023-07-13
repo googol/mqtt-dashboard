@@ -52,6 +52,9 @@ export const MqttConnection: FC<PropsWithChildren> = ({ children }) => {
           mqttClient.removeListener('message', handler)
         }
       },
+      sendToTopic: (topic, message, opts) => {
+        mqttClient.publish(topic, message, opts)
+      },
       logout: () => {
         localStorage.removeItem('mqtt_credentials')
         setMqttClient(undefined)

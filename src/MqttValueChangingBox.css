@@ -1,0 +1,4 @@
+.mqtt-value-changing-box__select--updating::after {
+  content: 'updating';
+  display: block;
+}

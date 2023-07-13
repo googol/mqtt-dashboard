@@ -1,4 +1,5 @@
 import { LogoutButton } from './LogoutButton'
+import { MediaStatus } from './MediaStatus'
 import { MqttConnection } from './MqttConnection'
 import { TemperatureReading } from './TemperatureReading'
 import type { FC } from 'react'
@@ -14,6 +15,7 @@ export const Dashboard: FC = () => {
         title={'makuuhuone'}
         topic="airgradient/makuuhuone/sensor/temperature/state"
       />
+      <MediaStatus />
       <LogoutButton />
     </MqttConnection>
   )
