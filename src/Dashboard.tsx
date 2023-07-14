@@ -2,6 +2,7 @@ import { LogoutButton } from './LogoutButton'
 import { MediaStatus } from './MediaStatus'
 import { MqttConnection } from './MqttConnection'
 import { TemperatureReading } from './TemperatureReading'
+import { TvLauncher } from './TvLauncher'
 import { VolumeButtons } from './VolumeButtons'
 import type { FC } from 'react'
 
@@ -18,6 +19,7 @@ export const Dashboard: FC = () => {
       />
       <MediaStatus />
       <VolumeButtons />
+      <TvLauncher />
       <LogoutButton />
     </MqttConnection>
   )
