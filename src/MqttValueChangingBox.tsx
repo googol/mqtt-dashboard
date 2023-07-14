@@ -1,7 +1,9 @@
 import './MqttValueChangingBox.css'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useMqttContext } from './MqttContext'
 import { ReadingBox } from './ReadingBox'
+import { useMqttTopicValue } from './mqttHooks'
+import { extractTopicValue } from './topicValue'
 import type { SendOptions } from './MqttContext'
 import type { ChangeEventHandler, ReactNode } from 'react'
 import type { ZodSchema, ZodTypeDef } from 'zod'
@@ -19,31 +21,15 @@ export function MqttValueChangingBox<ValueType extends string>(props: {
   const [currentValue, setCurrentValue] = useState<
     ValueType | typeof failureValue | undefined
   >(undefined)
-  const [upstreamValue, setUpstreamValue] = useState<
-    ValueType | typeof failureValue | undefined
-  >(undefined)
-  const { listenToTopic, sendToTopic } = useMqttContext()
+  const rawUpstreamValue = useMqttTopicValue(props.topic, props.schema)
+  const upstreamValue = useMemo(
+    () => extractTopicValue(rawUpstreamValue, undefined, failureValue),
+    [rawUpstreamValue],
+  )
   useEffect(() => {
-    const listener = (messageTopic: string, message: unknown) => {
-      if (messageTopic === props.topic) {
-        const parseResult = props.schema.safeParse(message)
-        if (parseResult.success) {
-          setUpstreamValue(parseResult.data)
-          setCurrentValue(parseResult.data)
-        } else {
-          console.error('Unable to parse value', {
-            topic: props.topic,
-            value: message,
-            error: parseResult.error,
-          })
-          setUpstreamValue(failureValue)
-          setCurrentValue(failureValue)
-        }
-      }
-    }
-    return listenToTopic(props.topic, listener)
-  }, [props.topic, props.schema])
-
+    setCurrentValue(upstreamValue)
+  }, [upstreamValue])
+  const { sendToTopic } = useMqttContext()
   const handleValueChange = useCallback<ChangeEventHandler<HTMLSelectElement>>(
     (event) => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any -- foo bar
