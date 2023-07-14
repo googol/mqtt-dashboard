@@ -5,12 +5,12 @@ export type MqttContext = {
     topic: string,
     handler: (messageTopic: string, message: unknown) => void,
   ) => () => void
-  sendToTopic: (topic: string, value: string, opts: SendOptions) => void
+  sendToTopic: (topic: string, value: string, opts?: SendOptions) => void
   logout: () => void
 }
 
 export type SendOptions = {
-  retain: boolean
+  retain?: boolean
 }
 
 const noOp = (): void => {
