@@ -6,6 +6,7 @@ import type { FC, MouseEventHandler } from 'react'
 const channels = {
   HDMI1: 'com.webos.app.hdmi1',
   Youtube: 'youtube.leanback.v4',
+  Plex: 'cdp-30',
 }
 
 export const TvLauncher: FC = () => {
