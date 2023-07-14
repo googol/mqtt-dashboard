@@ -16,7 +16,9 @@ function* extractClassNames(classNameInput: ClassNameInput): Generator<string> {
   } else if (typeof classNameInput === 'string') {
     yield classNameInput
   } else if (Array.isArray(classNameInput)) {
-    yield* extractClassNames(classNameInput)
+    for (const classNameElement of classNameInput) {
+      yield* extractClassNames(classNameElement)
+    }
   } else {
     for (const [className, enabled] of Object.entries(classNameInput)) {
       if (enabled) {
