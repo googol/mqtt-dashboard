@@ -118,6 +118,7 @@ function* getWebpackPlugins(argv) {
     prefix: 'assets/',
     inject: true,
     favicons: {
+      orientation: 'portrait',
       path: 'assets/',
       appShortName: 'Kotidashboard',
       appName: 'Kotidashboard',
